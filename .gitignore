@@ -1,0 +1,6 @@
+dist
+node_modules
+.vscode
+.temp
+.next
+data.json
