@@ -1,10 +1,12 @@
 import { Socket } from 'socket-actions/server';
 
-import AddPlans from './actions/addPlans';
+import AddPlan from './actions/addPlan';
+import EditPlan from './actions/editPlan';
 import RemovePlan from './actions/removePlan';
 
 const actions = {
-    addPlans: new AddPlans(),
+    addPlan: new AddPlan(),
+    editPlan: new EditPlan(),
     removePlan: new RemovePlan()
 };
 

@@ -8,27 +8,30 @@ import Client, { type messageReceiver } from 'socket-actions/client';
 import Form from '../components/Form';
 import { useRouter } from 'next/router';
 
-type holidayType = {
+export type vacationType = {
     title: string,
     description: string,
     date: Date,
     location: string,
-    participants?: string[]
+    participants?: string[],
+    key?: number
 };
 
 type propType = {
-    startingData: holidayType[]
+    startingData: vacationType[]
 };
 
 export default function Home({ startingData }: propType): ReactElement<any, any> {
     const [client, setClient] = useState<Client | undefined>();
-    const [data, setData] = useState<holidayType[]>(startingData);
+    const [data, setData] = useState<vacationType[]>(startingData);
 
     const router = useRouter();
 
     const { formActive: formActiveQuery } = router.query;
 
     const [formActive, setFormActive] = useState<boolean>(formActiveQuery === '1');
+
+    const [selectedItem, setSelectedItem] = useState<vacationType | undefined>();
 
     const connect = (onMessage: messageReceiver): void => {
         setClient(new Client({
@@ -46,6 +49,8 @@ export default function Home({ startingData }: propType): ReactElement<any, any>
     };
 
     const clickNew = (): void => {
+        setSelectedItem(undefined);
+
         window.history.pushState('', '', '/?formActive=1');
 
         setFormActive(true);
@@ -55,6 +60,14 @@ export default function Home({ startingData }: propType): ReactElement<any, any>
         window.history.pushState('', '', '/');
 
         setFormActive(false);
+    };
+
+    const clickEdit = (data: vacationType, key: number): void => {
+        setSelectedItem({ ...data, key });
+
+        window.history.pushState('', '', `/?formActive=1&key=${key}`);
+
+        setFormActive(true);
     };
 
     const clickRemove = (key: number): void => {
@@ -85,8 +98,8 @@ export default function Home({ startingData }: propType): ReactElement<any, any>
                         </Typography>
                     </Stack>
                     : formActive
-                        ? <Form client={client} clickClose={clickClose} />
-                        : <Table stickyHeader hoverRow>
+                        ? <Form client={client} clickClose={clickClose} selectedItem={selectedItem} />
+                        : <Table stickyHeader hoverRow sx={{ height: '100%' }}>
                             <thead>
                                 <tr>
                                     <th>Title</th>
@@ -94,12 +107,14 @@ export default function Home({ startingData }: propType): ReactElement<any, any>
                                     <th>Date</th>
                                     <th>Location</th>
                                     <th>Participants</th>
-                                    <th style={{ width: '15%' }}>Actions <Button variant="plain" onClick={clickNew}>+</Button></th>
+                                    <th style={{ width: '16%' }}>Actions <Button variant="plain" onClick={clickNew}>+</Button></th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                {data.map(({ title, description, date, location, participants }, key) => {
+                                {data.map((item, key) => {
+                                    const { title, description, date, location, participants } = item;
+
                                     const dateString = new Date(date).toLocaleDateString();
                                     const participatnsString = (participants ?? []).join(', ');
 
@@ -126,7 +141,7 @@ export default function Home({ startingData }: propType): ReactElement<any, any>
 
                                         <th>
                                             <Stack direction="row" gap={1}>
-                                                <Button variant='plain'>+</Button>
+                                                <Button variant='plain' onClick={() => { clickEdit(item, key); }}>+</Button>
 
                                                 <Button variant='plain' color="danger" onClick={() => { clickRemove(key); }}>X</Button>
                                             </Stack>
