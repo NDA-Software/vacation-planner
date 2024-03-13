@@ -1,7 +1,7 @@
 import { readFileSync, existsSync, writeFileSync } from 'fs';
 
 import { type ReactElement, useEffect, useState } from 'react';
-import { CssVarsProvider, Sheet, CssBaseline, Typography, Stack, Table, Button } from '@mui/joy';
+import { CssVarsProvider, Sheet, CssBaseline, Typography, Stack, Table, Button, Tooltip } from '@mui/joy';
 
 import Client, { type messageReceiver } from 'socket-actions/client';
 
@@ -57,6 +57,10 @@ export default function Home({ startingData }: propType): ReactElement<any, any>
         setFormActive(false);
     };
 
+    const clickRemove = (key: number): void => {
+        client?.sendAction('removePlan', { key });
+    };
+
     useEffect(() => {
         connect(async (message) => {
             const { newData } = JSON.parse(message.data);
@@ -95,19 +99,36 @@ export default function Home({ startingData }: propType): ReactElement<any, any>
                             </thead>
 
                             <tbody>
-                                {data.map(({ title, description, date, location, participants }) => {
+                                {data.map(({ title, description, date, location, participants }, key) => {
                                     const dateString = new Date(date).toLocaleDateString();
                                     const participatnsString = (participants ?? []).join(', ');
 
-                                    return <tr key={Math.random()}>
-                                        <th>{title}</th>
-                                        <th>{description}</th>
-                                        <th>{dateString}</th>
-                                        <th>{location}</th>
-                                        <th>{participatnsString}</th>
+                                    return <tr key={`vacation-${key}`}>
+                                        <Tooltip title={title}>
+                                            <th>{title}</th>
+                                        </Tooltip>
+
+                                        <Tooltip title={description}>
+                                            <th>{description}</th>
+                                        </Tooltip>
+
+                                        <Tooltip title={dateString}>
+                                            <th>{dateString}</th>
+                                        </Tooltip>
+
+                                        <Tooltip title={location}>
+                                            <th>{location}</th>
+                                        </Tooltip>
+
+                                        <Tooltip title={participatnsString}>
+                                            <th>{participatnsString}</th>
+                                        </Tooltip>
+
                                         <th>
                                             <Stack direction="row" gap={1}>
-                                                <Button variant='plain'>+</Button><Button variant='plain' color="danger">X</Button>
+                                                <Button variant='plain'>+</Button>
+
+                                                <Button variant='plain' color="danger" onClick={() => { clickRemove(key); }}>X</Button>
                                             </Stack>
                                         </th>
                                     </tr>;

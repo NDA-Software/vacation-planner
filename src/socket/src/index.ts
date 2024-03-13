@@ -1,9 +1,11 @@
 import { Socket } from 'socket-actions/server';
 
 import AddPlans from './actions/addPlans';
+import RemovePlan from './actions/removePlan';
 
 const actions = {
-    addPlans: new AddPlans()
+    addPlans: new AddPlans(),
+    removePlan: new RemovePlan()
 };
 
 // eslint-disable-next-line no-new
