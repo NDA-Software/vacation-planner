@@ -8,7 +8,7 @@ const filePath = '../../data.json';
 
 export default class AddPlans extends Action {
     override async onRun(param: ActionParameters): Promise<void> {
-        const { data, userData } = param;
+        const { data } = param;
 
         let newData = [];
         if (existsSync(filePath)) {
@@ -21,6 +21,6 @@ export default class AddPlans extends Action {
 
         writeFileSync(filePath, JSON.stringify(newData));
 
-        this.server?.sendMessageToAll({ data }, { exceptions: [userData.id] });
+        // this.server?.sendMessageToAll({ newData }, { exceptions: [] });
     }
 }

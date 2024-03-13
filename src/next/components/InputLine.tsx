@@ -1,4 +1,4 @@
-import { FormLabel, Input, Stack } from '@mui/joy';
+import { FormLabel, Grid, Input } from '@mui/joy';
 
 import { firstToUppercase } from 'ts-cornucopia/string';
 
@@ -20,8 +20,8 @@ export default function InputLine(props: propType): JSX.Element {
         required = defaultType.required
     } = props;
 
-    return <Stack gap={1}>
+    return <Grid sm={3} md={3} lg={3}>
         <FormLabel>{firstToUppercase(name)}</FormLabel>
         <Input name={name} type={type} required={required} />
-    </Stack>;
+    </Grid>;
 }

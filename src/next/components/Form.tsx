@@ -1,8 +1,9 @@
-import { Button, FormLabel, Input, Stack } from '@mui/joy';
+import { Button, FormLabel, Grid, Input, Stack, Typography } from '@mui/joy';
 import { type FormEvent, useState } from 'react';
 import type Client from 'socket-actions/client';
 
 import InputLine from './InputLine';
+import { useRouter } from 'next/router';
 
 type propType = {
     client?: Client
@@ -10,6 +11,8 @@ type propType = {
 
 export default function Form({ client }: propType): JSX.Element {
     const [participantsQuantity, setPariticipantsQuantity] = useState(0);
+
+    const router = useRouter();
 
     const clickAddParticipants = (): void => {
         setPariticipantsQuantity(participantsQuantity + 1);
@@ -50,33 +53,49 @@ export default function Form({ client }: propType): JSX.Element {
         setPariticipantsQuantity(0);
 
         client?.sendAction('addPlans', data);
+
+        clickClose();
+    };
+
+    const clickClose = (): void => {
+        router.push('/')
+            .then(() => {})
+            .catch(() => {});
     };
 
     return <form onSubmit={submit}>
-        <Stack gap={2}>
-            <InputLine name='title' required />
+        <Stack justifyContent="space-between" height="calc(100vh - 16px)" gap={1}>
+            <Stack height="3vh">
+                <Typography level="h4" textAlign="center">New Vacation</Typography>
+            </Stack>
 
-            <InputLine name="description" />
+            <Button variant="plain" onClick={clickClose} sx={{ position: 'absolute', top: '8px', right: '8px' }}>X</Button>
 
-            <InputLine name="location" />
+            <Grid container sx={{ height: '94vh', overflow: 'auto', paddingRight: '8px' }} columns={{ sm: 3, md: 6, lg: 6 }} spacing={1} alignContent="flex-start">
+                <InputLine name='title' required />
 
-            <InputLine name="date" type='date' required />
+                <InputLine name="description" />
 
-            <Stack gap={1}>
-                <Stack direction="row" justifyContent="space-between">
-                    <FormLabel>Participants</FormLabel>
+                <InputLine name="location" />
 
-                    <Stack direction="row" gap={1}>
-                        <Button color="success" onClick={clickAddParticipants}>+</Button>
+                <InputLine name="date" type='date' required />
 
-                        <Button color="neutral" onClick={clickRemoveParticipants}>-</Button>
+                <Grid sm={3} md={6} lg={6}>
+                    <Stack direction="row" justifyContent="space-between">
+                        <FormLabel>Participants</FormLabel>
+
+                        <Stack direction="row" gap={1}>
+                            <Button color="success" onClick={clickAddParticipants}>+</Button>
+
+                            <Button color="neutral" onClick={clickRemoveParticipants}>-</Button>
+                        </Stack>
                     </Stack>
-                </Stack>
+                </Grid>
 
                 {[...Array(participantsQuantity)].map((_, key) => {
-                    return <Input required name="participants[]" key={`participant-${key}`} />;
+                    return <Grid sm={1} md={1} lg={1}><Input required name="participants[]" key={`participant-${key}`} /></Grid>;
                 })}
-            </Stack>
+            </Grid>
 
             <Button color="primary" type="submit">Save</Button>
         </Stack>
