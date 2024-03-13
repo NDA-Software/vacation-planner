@@ -3,16 +3,14 @@ import { type FormEvent, useState } from 'react';
 import type Client from 'socket-actions/client';
 
 import InputLine from './InputLine';
-import { useRouter } from 'next/router';
 
 type propType = {
+    clickClose: () => void,
     client?: Client
 }
 
-export default function Form({ client }: propType): JSX.Element {
+export default function Form({ client, clickClose }: propType): JSX.Element {
     const [participantsQuantity, setPariticipantsQuantity] = useState(0);
-
-    const router = useRouter();
 
     const clickAddParticipants = (): void => {
         setPariticipantsQuantity(participantsQuantity + 1);
@@ -57,12 +55,6 @@ export default function Form({ client }: propType): JSX.Element {
         clickClose();
     };
 
-    const clickClose = (): void => {
-        router.push('/')
-            .then(() => {})
-            .catch(() => {});
-    };
-
     return <form onSubmit={submit}>
         <Stack justifyContent="space-between" height="calc(100vh - 16px)" gap={1}>
             <Stack height="3vh">
@@ -76,7 +68,7 @@ export default function Form({ client }: propType): JSX.Element {
 
                 <InputLine name="description" />
 
-                <InputLine name="location" />
+                <InputLine name="location" required />
 
                 <InputLine name="date" type='date' required />
 

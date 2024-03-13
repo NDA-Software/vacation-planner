@@ -26,7 +26,9 @@ export default function Home({ startingData }: propType): ReactElement<any, any>
 
     const router = useRouter();
 
-    const { formActive } = router.query;
+    const { formActive: formActiveQuery } = router.query;
+
+    const [formActive, setFormActive] = useState<boolean>(formActiveQuery === '1');
 
     const connect = (onMessage: messageReceiver): void => {
         setClient(new Client({
@@ -44,13 +46,15 @@ export default function Home({ startingData }: propType): ReactElement<any, any>
     };
 
     const clickNew = (): void => {
-        router.push({
-            pathname: '/',
-            query: {
-                formActive: '1'
-            }
-        }).then(() => {}
-        ).catch(() => {});
+        window.history.pushState('', '', '/?formActive=1');
+
+        setFormActive(true);
+    };
+
+    const clickClose = (): void => {
+        window.history.pushState('', '', '/');
+
+        setFormActive(false);
     };
 
     useEffect(() => {
@@ -76,8 +80,8 @@ export default function Home({ startingData }: propType): ReactElement<any, any>
                             If this message persists, the server is offline or unreachable.
                         </Typography>
                     </Stack>
-                    : formActive === '1'
-                        ? <Form client={client} />
+                    : formActive
+                        ? <Form client={client} clickClose={clickClose} />
                         : <Table stickyHeader hoverRow>
                             <thead>
                                 <tr>

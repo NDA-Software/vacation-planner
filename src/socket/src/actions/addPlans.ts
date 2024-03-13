@@ -21,6 +21,6 @@ export default class AddPlans extends Action {
 
         writeFileSync(filePath, JSON.stringify(newData));
 
-        // this.server?.sendMessageToAll({ newData }, { exceptions: [] });
+        this.server?.sendMessageToAll({ newData }, { exceptions: [] });
     }
 }
