@@ -98,7 +98,7 @@ export default function Form({ client, clickClose, selectedItem }: propType): JS
     return <form onSubmit={submit}>
         <Stack justifyContent="space-between" height="calc(100vh - 16px)" gap={1}>
             <Stack height="3vh">
-                <Typography level="h4" textAlign="center">New Vacation</Typography>
+                <Typography level="h4" textAlign="center">{selectedItem !== undefined ? 'Edit' : 'New'} Vacation</Typography>
             </Stack>
 
             <Button variant="plain" onClick={clickClose} sx={{ position: 'absolute', top: '8px', right: '8px' }}>X</Button>
