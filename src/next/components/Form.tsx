@@ -127,7 +127,7 @@ export default function Form({ client, clickClose, selectedItem }: propType): JS
                 </Grid>
 
                 {[...Array(participantsQuantity)].map((_, key) => {
-                    return <Grid sm={1} md={1} lg={1}><Input required name="participants[]" key={`participant-${key}`} /></Grid>;
+                    return <Grid sm={1} md={1} lg={1} key={`participant-${key}`}><Input required name="participants[]" /></Grid>;
                 })}
             </Grid>
 

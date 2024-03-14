@@ -29,10 +29,10 @@ export default function Home({ startingData }: propType): ReactElement<any, any>
 
     const router = useRouter();
 
-    const { formActive: formActiveQuery } = router.query;
+    const { formActive: formActiveQuery, key: itemKey } = router.query;
 
     const [formActive, setFormActive] = useState<boolean>(formActiveQuery === '1');
-    const [selectedItem, setSelectedItem] = useState<vacationType | undefined>();
+    const [selectedItem, setSelectedItem] = useState<vacationType | undefined>(itemKey !== undefined ? data[Number(itemKey)] : undefined);
 
     const [printing, setPrinting] = useState<boolean>(false);
 
